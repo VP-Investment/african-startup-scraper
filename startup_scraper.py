@@ -673,6 +673,15 @@ def main():
             logging.info("Scheduler stopped by user")
 
 if __name__ == "__main__":
+    import sys
     import os
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    
+    # Check if running in cloud mode
+    if '--mode' in sys.argv and 'cloud' in sys.argv:
+        port = int(os.environ.get("PORT", 5000))
+        # Initialize scraper in cloud mode
+        scraper = AfricanStartupScraper()
+        app.run(host="0.0.0.0", port=port)
+    else:
+        # Local mode
+        main()
