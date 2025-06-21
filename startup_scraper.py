@@ -558,6 +558,52 @@ def dashboard():
 @app.route('/trigger')
 def trigger_scrape():
     """Manually trigger scraping"""
+    print("=== TRIGGER ENDPOINT CALLED ===")  # Debug log
+    
+    if scraper_instance and email_config_global:
+        try:
+            print("Starting manual scrape...")  # Debug log
+            print(f"Scraper instance: {type(scraper_instance)}")  # Debug log
+            print(f"Email config: {email_config_global is not None}")  # Debug log
+            
+            # Call the scraping function with better error context
+            articles_count = scraper_instance.daily_scrape_and_send(email_config_global)
+            
+            print(f"Scrape completed successfully. Articles found: {articles_count}")  # Debug log
+            
+            return jsonify({
+                'status': 'success',
+                'message': f'Manual scrape completed. Found {articles_count} new articles.',
+                'articles_count': articles_count,
+                'timestamp': datetime.now().isoformat()
+            })
+            
+        except AttributeError as e:
+            error_msg = f"Scraper method error: {str(e)}"
+            print(f"ERROR - AttributeError: {error_msg}")
+            app.logger.error(error_msg)
+            return jsonify({
+                'status': 'error',
+                'message': error_msg,
+                'error_type': 'AttributeError',
+                'timestamp': datetime.now().isoformat()
+            }), 500
+            
+        except Exception as e:
+            error_msg = f"Scraping failed: {str(e)}"
+            print(f"ERROR - General Exception: {error_msg}")
+            print(f"Exception type: {type(e)}")
+            app.logger.error(error_msg)
+            return jsonify({
+                'status': 'error',
+                'message': error_msg,
+                'error_type': str(type(e).__name__),
+                'timestamp': datetime.now().isoformat()
+            }), 500
+
+@app.route('/trigger')
+def trigger_scrape():
+    """Manually trigger scraping"""
     if scraper_instance and email_config_global:
         try:
             articles_count = scraper_instance.daily_scrape_and_send(email_config_global)
