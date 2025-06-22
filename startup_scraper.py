@@ -502,6 +502,26 @@ class AfricanStartupScraper:
         except Exception as e:
             logging.error(f"Error in daily scrape and send: {e}")
             return 0
+    
+    # Email configuration - UPDATE THESE VALUES
+    EMAIL_CONFIG = {
+    	'sender_email': os.getenv('SENDER_EMAIL', 'vpinvestment@venturesplatform.com'),
+    	'sender_password': os.getenv('SENDER_PASSWORD', 'napsgqyupxuuitvo'),
+   	'recipients': os.getenv('RECIPIENTS', 'vpinvestment@venturesplatform.com', 'sola@venturesplatform.com').split(','),
+    	'smtp_server': 'smtp.gmail.com',
+   	 'smtp_port': 587
+    }
+    
+    # Initialize scraper
+    global scraper_instance, email_config_global
+    scraper_instance = AfricanStartupScraper()
+    email_config_global = EMAIL_CONFIG
+
+# Add debug logging
+print(f"=== INITIALIZATION COMPLETE ===")
+print(f"scraper_instance: {scraper_instance}")
+print(f"email_config_global: {email_config_global}")
+print(f"=== END INITIALIZATION ===")
 
 # Flask web interface for manual triggers and cloud deployment
 app = Flask(__name__)
@@ -666,26 +686,6 @@ def main():
                        help='Port for web service (cloud mode)')
     
     args = parser.parse_args()
-    
-    # Email configuration - UPDATE THESE VALUES
-    EMAIL_CONFIG = {
-    	'sender_email': os.getenv('SENDER_EMAIL', 'vpinvestment@venturesplatform.com'),
-    	'sender_password': os.getenv('SENDER_PASSWORD', 'napsgqyupxuuitvo'),
-   	'recipients': os.getenv('RECIPIENTS', 'vpinvestment@venturesplatform.com', 'sola@venturesplatform.com').split(','),
-    	'smtp_server': 'smtp.gmail.com',
-   	 'smtp_port': 587
-    }
-    
-    # Initialize scraper
-    global scraper_instance, email_config_global
-    scraper_instance = AfricanStartupScraper()
-    email_config_global = EMAIL_CONFIG
-
-# Add debug logging
-print(f"=== INITIALIZATION COMPLETE ===")
-print(f"scraper_instance: {scraper_instance}")
-print(f"email_config_global: {email_config_global}")
-print(f"=== END INITIALIZATION ===")
     
     if args.mode == 'cloud':
         # Cloud mode - run as web service (for deployment on Heroku, Railway, etc.)
