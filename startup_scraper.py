@@ -560,6 +560,10 @@ def trigger_scrape():
     """Manually trigger scraping"""
     print("=== TRIGGER ENDPOINT CALLED ===")  # Debug log
     
+    # Add explicit check with debug info
+    print(f"scraper_instance exists: {scraper_instance is not None}")
+    print(f"email_config_global exists: {email_config_global is not None}")
+    
     if scraper_instance and email_config_global:
         try:
             print("Starting manual scrape...")  # Debug log
@@ -581,7 +585,6 @@ def trigger_scrape():
         except AttributeError as e:
             error_msg = f"Scraper method error: {str(e)}"
             print(f"ERROR - AttributeError: {error_msg}")
-            app.logger.error(error_msg)
             return jsonify({
                 'status': 'error',
                 'message': error_msg,
@@ -593,13 +596,29 @@ def trigger_scrape():
             error_msg = f"Scraping failed: {str(e)}"
             print(f"ERROR - General Exception: {error_msg}")
             print(f"Exception type: {type(e)}")
-            app.logger.error(error_msg)
             return jsonify({
                 'status': 'error',
                 'message': error_msg,
                 'error_type': str(type(e).__name__),
                 'timestamp': datetime.now().isoformat()
             }), 500
+    
+    # This else block MUST execute if the if condition fails
+    missing_items = []
+    if not scraper_instance:
+        missing_items.append("scraper_instance")
+    if not email_config_global:
+        missing_items.append("email_config_global")
+        
+    error_msg = f"Missing required components: {', '.join(missing_items)}"
+    print(f"ERROR - Missing components: {error_msg}")
+    
+    return jsonify({
+        'status': 'error',
+        'message': error_msg,
+        'missing_components': missing_items,
+        'timestamp': datetime.now().isoformat()
+    }), 500
 
 @app.route('/status')
 def get_status():
