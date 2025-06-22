@@ -507,7 +507,7 @@ class AfricanStartupScraper:
     EMAIL_CONFIG = {
     	'sender_email': os.getenv('SENDER_EMAIL', 'vpinvestment@venturesplatform.com'),
     	'sender_password': os.getenv('SENDER_PASSWORD', 'napsgqyupxuuitvo'),
-   	'recipients': os.getenv('RECIPIENTS', 'vpinvestment@venturesplatform.com', 'sola@venturesplatform.com').split(','),
+   	'recipients': os.getenv('RECIPIENTS', 'vpinvestment@venturesplatform.com','sola@venturesplatform.com').split(','),
     	'smtp_server': 'smtp.gmail.com',
    	 'smtp_port': 587
     }
