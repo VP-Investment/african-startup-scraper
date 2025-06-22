@@ -558,11 +558,22 @@ def trigger_scrape():
     """Manually trigger scraping"""
     print("=== TRIGGER ENDPOINT CALLED ===")  # Debug log
     
-    # Add explicit check with debug info
-    print(f"scraper_instance exists: {scraper_instance is not None}")
-    print(f"email_config_global exists: {email_config_global is not None}")
+    # Safely check if variables exist
+    try:
+        scraper_exists = scraper_instance is not None
+        print(f"scraper_instance exists: {scraper_exists}")
+    except NameError:
+        print("ERROR: scraper_instance is not defined at all!")
+        scraper_exists = False
+        
+    try:
+        email_exists = email_config_global is not None
+        print(f"email_config_global exists: {email_exists}")
+    except NameError:
+        print("ERROR: email_config_global is not defined at all!")
+        email_exists = False
     
-    if scraper_instance and email_config_global:
+    if scraper_exists and email_exists:
         try:
             print("Starting manual scrape...")  # Debug log
             print(f"Scraper instance: {type(scraper_instance)}")  # Debug log
@@ -601,11 +612,11 @@ def trigger_scrape():
                 'timestamp': datetime.now().isoformat()
             }), 500
     
-    # This else block MUST execute if the if condition fails
+    # Handle missing components
     missing_items = []
-    if not scraper_instance:
+    if not scraper_exists:
         missing_items.append("scraper_instance")
-    if not email_config_global:
+    if not email_exists:
         missing_items.append("email_config_global")
         
     error_msg = f"Missing required components: {', '.join(missing_items)}"
@@ -666,8 +677,15 @@ def main():
     }
     
     # Initialize scraper
+    global scraper_instance, email_config_global
     scraper_instance = AfricanStartupScraper()
     email_config_global = EMAIL_CONFIG
+
+# Add debug logging
+print(f"=== INITIALIZATION COMPLETE ===")
+print(f"scraper_instance: {scraper_instance}")
+print(f"email_config_global: {email_config_global}")
+print(f"=== END INITIALIZATION ===")
     
     if args.mode == 'cloud':
         # Cloud mode - run as web service (for deployment on Heroku, Railway, etc.)
