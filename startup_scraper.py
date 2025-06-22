@@ -601,30 +601,6 @@ def trigger_scrape():
                 'timestamp': datetime.now().isoformat()
             }), 500
 
-@app.route('/trigger')
-def trigger_scrape():
-    """Manually trigger scraping"""
-    if scraper_instance and email_config_global:
-        try:
-            articles_count = scraper_instance.daily_scrape_and_send(email_config_global)
-            return jsonify({
-                'status': 'success',
-                'message': f'Manual scrape completed. Found {articles_count} new articles.',
-                'articles_count': articles_count,
-                'timestamp': datetime.now().isoformat()
-            })
-        except Exception as e:
-            return jsonify({
-                'status': 'error',
-                'message': str(e),
-                'timestamp': datetime.now().isoformat()
-            }), 500
-    else:
-        return jsonify({
-            'status': 'error',
-            'message': 'Scraper not initialized'
-        }), 500
-
 @app.route('/status')
 def get_status():
     """Get current system status"""
