@@ -503,8 +503,8 @@ class AfricanStartupScraper:
             logging.error(f"Error in daily scrape and send: {e}")
             return 0
     
-    # Email configuration - UPDATE THESE VALUES
-    EMAIL_CONFIG = {
+# Email configuration - UPDATE THESE VALUES
+EMAIL_CONFIG = {
     	'sender_email': os.getenv('SENDER_EMAIL', 'vpinvestment@venturesplatform.com'),
     	'sender_password': os.getenv('SENDER_PASSWORD', 'napsgqyupxuuitvo'),
    	'recipients': os.getenv('RECIPIENTS', 'vpinvestment@venturesplatform.com,sola@venturesplatform.com').split(','),
@@ -512,10 +512,10 @@ class AfricanStartupScraper:
    	 'smtp_port': 587
     }
     
-    # Initialize scraper
-    global scraper_instance, email_config_global
-    scraper_instance = AfricanStartupScraper()
-    email_config_global = EMAIL_CONFIG
+# Initialize scraper
+global scraper_instance, email_config_global
+scraper_instance = AfricanStartupScraper()
+email_config_global = EMAIL_CONFIG
 
 # Add debug logging
 print(f"=== INITIALIZATION COMPLETE ===")
