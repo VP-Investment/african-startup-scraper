@@ -505,8 +505,6 @@ class AfricanStartupScraper:
 
 # Flask web interface for manual triggers and cloud deployment
 app = Flask(__name__)
-scraper_instance = None
-email_config_global = None
 
 @app.route('/')
 def dashboard():
